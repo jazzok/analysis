@@ -14,43 +14,81 @@ import pylab;
 from matplotlib import mlab;
 ####
 
-import argparse
+import optparse
+import sys
+
 class Parser:
 	"""docstring for Parser"""
 
 	def __init__(self, arg):
 		self.arg = arg
-		parser = argparse.ArgumentParser()
-		subparsers = parser.add_subparsers(help='List of commands')
-		# A list command
-		list_parser = subparsers.add_parser('list', help='List contents')
-		list_parser.add_argument('dirname', action='store', help='Directory to list')
+		self.parsing()		
+
+	def parsing(self):
+		print("parsing")
+
+
+		
+		pass
 
 ###
 class Analysis:
 	"""docstring for Analysis"""
 
-	def __init__(self,arg):
-		self.arg = arg
-		self.loadFile()
+	arrayAngelPlus = []
+	arrayAngelMinus = []
+	arrayOshPlus = []
+	arrayOshMinus = []
+
+	def __init__(self,filename):		
+		self.filename = filename
+		self.checkFile()
+		self.proc()
+
+	def proc(self):		
+		self.stat()
+#		self.display()
+
+	def checkFile(self):
+		if os.path.exists(self.filename):
+			if os.path.isfile(self.filename):
+				self.loadFile()
+	
 
 	def loadFile(self):
 		try:
-			dataFile = open(self.arg, 'r+')			
-			line = dataFile.readline()  				
-			print(line)
-			dataFile.close()
+			dataFile = open(self.filename, 'r+')			
+  			for (line) in dataFile:
+  				self.arrayAngelPlus.append(line.split()[0])
+  				self.arrayAngelMinus.append(line.split()[1])
+  				self.arrayOshPlus.append(line.split()[2])
+  				self.arrayOshMinus.append(line.split()[3])
+  			dataFile.close()
 		except IOError as (errno, strerror):
 			print ("I/O error({0}): {1}",format(errno, strerror))
-			sys.exit('Open file error!') 
+			sys.exit('Open file error!')
 		except ValueError:
 			print ("Не могу преобразовать данные в целое.")
-			sys.exit('Open file error!') 
+			sys.exit('Open file error!')
 		except:
 			print ("Неизвестная ошибка:", sys.exc_info()[0])
-			sys.exit('Open file error!') 
-			raise		
-	#def run():
+			sys.exit('Open file error!')
+			raise
+		finally:
+			dataFile.close()
+
+	def stat(self):
+		#	Среднее арифметическое значение
+		#	Среднее взвешенное значение (медиана)
+		#	Дисперсия случайной величины
+		#	Стандартное отклонение
+		#	Погрешности выборки		
+		pass
+
+	def display(self):
+		data = "test"
+		pl = Plot(data)
+		pass
 
 ####
 from numpy import *
@@ -59,8 +97,9 @@ import matplotlib.pyplot as plt
 class Plot:
 	"""docstring for Plot"""
 
-	def __init__(self, arg):
-		self.arg = arg
+	def __init__(self, filename):
+		self.filename = filename
+		self.load()
 
 	def load(self):
 		t = linspace(0, 3, 51)
@@ -99,19 +138,20 @@ def main(argv=None):
         argv = sys.argv
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "h", ["help"])            
-            par = Parser("C:/123")
-            pathFile = "D:/Projects/analysis/PPGN-A.TXT"
+            pathFile = "D:/Projects/analysis/test.txt"
             anal = Analysis(pathFile)
-            data = "test"
-			#plot = Plot(data)
         except getopt.error, msg:
-             raise Usage(msg)
+            raise Usage(msg)
     except Usage, err:
-        print >>sys.stderr, err.msg
-        print >>sys.stderr, "for help use --help"
+        print >> sys.stderr, err.msg
+        print >> sys.stderr, "for help use --help"
         return 2
 
 ###
+
 if __name__ == "__main__":
+	parser=optparse.OptionParser()
+	parser.add_option('-w', '--word', help='word number to sort by', type='int', default=0)
+	parser.add_option('-r', '--reverse', action='store_true', help='reverse sort order')
+	options, args=parser.parse_args()			
 	sys.exit(main())

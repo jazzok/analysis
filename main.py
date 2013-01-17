@@ -3,16 +3,8 @@
 # Для совместимости с Python 3.2
 from __future__ import print_function, division, absolute_import
 #Импортируем библиотеки
-import sys, os, getopt;
-#Импортируем библиотеку NumPy
-import numpy;
-#Импортируем библиотеку Math
-import math;
-#Импортируем один из пакетов Matplotlib
-import pylab;
-#Импортируем пакет со вспомогательными функциями
-from matplotlib import mlab;
-####
+import argparse, sys, os;
+import matplotlib.pyplot as plt
 
 class Analysis:
 	"""docstring for Analysis"""
@@ -23,11 +15,11 @@ class Analysis:
 	arrayOshMinus = []
 
 	def __init__(self,filename):		
-		self.filename = filename
-		self.checkFile()
+		self.filename = filename		
 		self.proc()
 
-	def proc(self):		
+	def proc(self):
+		self.checkFile()
 		self.stat()
 		self.display()
 
@@ -41,10 +33,10 @@ class Analysis:
 		try:
 			dataFile = open(self.filename, 'r+')			
   			for (line) in dataFile:
-  				self.arrayAngelPlus.append(line.split()[0])
-  				self.arrayAngelMinus.append(line.split()[1])
-  				self.arrayOshPlus.append(line.split()[2])
-  				self.arrayOshMinus.append(line.split()[3])
+  				self.arrayAngelPlus.append(float(line.split()[0]))
+  				self.arrayOshPlus.append(float(line.split()[1]))
+  				self.arrayAngelMinus.append(float(line.split()[2]))
+  				self.arrayOshMinus.append(float(line.split()[3]))
   			dataFile.close()
 		except IOError as (errno, strerror):
 			print ("I/O error({0}): {1}",format(errno, strerror))
@@ -59,8 +51,8 @@ class Analysis:
 		finally:
 			dataFile.close()
 
-	def stat(self):
-		#	Среднее арифметическое значение
+	def stat(self):		
+		#	Среднее арифметическое значение		
 		#	Среднее взвешенное значение (медиана)
 		#	Дисперсия случайной величины
 		#	Стандартное отклонение
@@ -68,67 +60,33 @@ class Analysis:
 		pass
 
 	def display(self):
-		data = "test"
-		pl = Plot(data)
+		#self.chartError()
+		self.chartBacklash()
 		pass
 
-####
-from numpy import *
-import matplotlib.pyplot as plt
-
-class Plot:
-	"""docstring for Plot"""
-
-	def __init__(self, filename):
-		self.filename = filename
-		self.load()
-
-	def load(self):
-		t = linspace(0, 3, 51)
-		y1 = t**2*exp(-t**2)
-		y2 = t**4*exp(-t**2)
-		y3 = t**6*exp(-t**2)
-
-		plt.plot(t, y1, 'g^',    # маркеры из зеленых треугольников
-		         t, y2, 'b--',   # синяя штриховая
-		         t, y3, 'ro-')   # красные круглые маркеры,
-		                         # соединенные сплошной линией
-
-		plt.xlabel('t')
-		plt.ylabel('y')
-		plt.title('Plotting with markers')
-		plt.legend(['t^2*exp(-t^2)',
-		            't^4*exp(-t^2)',
-		            't^6*exp(-t^2)'],    # список легенды
-		            loc='upper left')    # положение легенды
+	def chartError(self):
+		plt.plot(self.arrayAngelPlus, self.arrayOshPlus,
+				 self.arrayAngelMinus, self.arrayOshMinus)
+		plt.xlabel('Angel')
+		plt.ylabel('Error')
+		plt.title('osc')
+		plt.legend(['osc'], loc='upper right')
 		plt.show()
-		pass
 
-	def show(self):
-		pass
+	def chartBacklash(self):		
+		plt.plot(self.arrayAngelPlus,self.arrayOshPlus)
+		plt.xlabel('Angel', size=12)
+		plt.ylabel('Error', size=12)
+		plt.title('osc', size=12)
+		plt.legend(['osc'], loc='upper right')
+		plt.show()
 
-###
-class Usage(Exception):
-
-    def __init__(self, msg):
-        self.msg = msg
-        pass
 
 ###
 def main(argv):
-    try:
-        try:            
-            anal = Analysis(argv)
-        except getopt.error, msg:
-            raise Usage(msg)
-    except Usage, err:
-        print >> sys.stderr, err.msg
-        print >> sys.stderr, "for help use --help"
-        return 2
+    anal = Analysis(argv)    
 
 ###
-
-import argparse
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(add_help=False)
 	parser.add_argument('-f', '--file', action="store", dest="filename", help="input file", default='test.txt')	

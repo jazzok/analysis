@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-# Для совместимости с Python 3.2
+
+#	Для совместимости с Python 3.2
 from __future__ import print_function, division, absolute_import
-#Импортируем библиотеки
+
+#	Импортируем библиотеки
 import argparse, sys, os;
+import scipy as sp
 import matplotlib.pyplot as plt
+from scipy import stats
+from numpy import random, mean, var, std
 
 class Analysis:
 	"""docstring for Analysis"""
@@ -20,7 +25,7 @@ class Analysis:
 
 	def proc(self):
 		self.checkFile()
-		self.stat()
+		self.calc()
 		self.display()
 
 	def checkFile(self):
@@ -51,22 +56,39 @@ class Analysis:
 		finally:
 			dataFile.close()
 
-	def stat(self):		
-		#	Среднее арифметическое значение		
+	def calc(self):				
 		#	Среднее взвешенное значение (медиана)
-		#	Дисперсия случайной величины
+		medianOshPlus = sp.median(self.arrayOshPlus)
+		medianOshMinus = sp.median(self.arrayOshMinus)
+		print ("medianOshMinus =",medianOshPlus)
+		print ("medianOshMinus =",medianOshMinus)
+		# среднее значение
+		meanOshPlus = mean(self.arrayOshPlus)
+		meanOshMinus = mean(self.arrayOshMinus)
+		print ("meanOshPlus =",meanOshPlus)
+		print ("meanOshMinus =",meanOshMinus)
+		# дисперсияMinus
+		varOshPlus = var(self.arrayOshPlus)
+		varOshMinus = var(self.arrayOshMinus)
+		print ("varOshPlus =",varOshPlus)
+		print ("varOshMinus =",varOshMinus)
+		# СКО
+		stdOshPlus = std(self.arrayOshPlus)
+		stdOshMinus = std(self.arrayOshMinus)
+		print ("stdOshPlus =",stdOshPlus)
+		print ("stdOshMinus =",stdOshMinus)
 		#	Стандартное отклонение
 		#	Погрешности выборки		
 		pass
 
 	def display(self):
-		#self.chartError()
-		self.chartBacklash()
+		self.chartError()
+		#self.chartBacklash()
 		pass
 
 	def chartError(self):
 		plt.plot(self.arrayAngelPlus, self.arrayOshPlus,
-				 self.arrayAngelMinus, self.arrayOshMinus)
+				 self.arrayAngelMinus, self.arrayOshMinus)		
 		plt.xlabel('Angel')
 		plt.ylabel('Error')
 		plt.title('osc')
@@ -75,8 +97,8 @@ class Analysis:
 
 	def chartBacklash(self):		
 		plt.plot(self.arrayAngelPlus,self.arrayOshPlus)
-		plt.xlabel('Angel', size=12)
-		plt.ylabel('Error', size=12)
+		plt.xlabel('Angel', size=10)
+		plt.ylabel('Error', size=10)
 		plt.title('osc', size=12)
 		plt.legend(['osc'], loc='upper right')
 		plt.show()

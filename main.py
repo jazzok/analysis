@@ -14,24 +14,6 @@ import pylab;
 from matplotlib import mlab;
 ####
 
-import optparse
-import sys
-
-class Parser:
-	"""docstring for Parser"""
-
-	def __init__(self, arg):
-		self.arg = arg
-		self.parsing()		
-
-	def parsing(self):
-		print("parsing")
-
-
-		
-		pass
-
-###
 class Analysis:
 	"""docstring for Analysis"""
 
@@ -47,7 +29,7 @@ class Analysis:
 
 	def proc(self):		
 		self.stat()
-#		self.display()
+		self.display()
 
 	def checkFile(self):
 		if os.path.exists(self.filename):
@@ -133,13 +115,10 @@ class Usage(Exception):
         pass
 
 ###
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
+def main(argv):
     try:
-        try:
-            pathFile = "D:/Projects/analysis/test.txt"
-            anal = Analysis(pathFile)
+        try:            
+            anal = Analysis(argv)
         except getopt.error, msg:
             raise Usage(msg)
     except Usage, err:
@@ -149,9 +128,11 @@ def main(argv=None):
 
 ###
 
+import argparse
 if __name__ == "__main__":
-	parser=optparse.OptionParser()
-	parser.add_option('-w', '--word', help='word number to sort by', type='int', default=0)
-	parser.add_option('-r', '--reverse', action='store_true', help='reverse sort order')
-	options, args=parser.parse_args()			
-	sys.exit(main())
+	parser = argparse.ArgumentParser(add_help=False)
+	parser.add_argument('-f', '--file', action="store", dest="filename", help="input file", default='test.txt')	
+	parser.add_argument('--version', action='version', version='%(prog)s 0.1')
+	arg = parser.parse_args() 	
+	pathFile = os.path.dirname(os.path.abspath(__file__)) + "\\" + arg.filename
+	sys.exit(main(pathFile))

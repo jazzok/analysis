@@ -84,9 +84,9 @@ class Analysis:
 		pass
 
 	def display(self):
-		self.chartError()
+		#self.chartError()
 		#self.chartBacklash()
-		#self.chartFFT()
+		self.chartFFT()
 		pass
 
 	def chartError(self):
@@ -99,7 +99,7 @@ class Analysis:
 		plt.show()
 
 	def chartBacklash(self):		
-		plt.plot(self.arrayAngelPlus,self.arrayOshPlus)
+		plt.plot(self.arrayAngelPlus, self.arrayOshPlus)
 		plt.xlabel('Angel', size=10)
 		plt.ylabel('Error', size=10)
 		plt.title('osc', size=12)
@@ -108,12 +108,20 @@ class Analysis:
 
 	def chartFFT(self):
 		#self.arrayOshPlus
-		FFT = abs(scipy.fft(self.arrayOshPlus))
-		freqs = scipy.fftpack.fftfreq(self.arrayOshPlus, 25)
-		plt.plot(freqs,20*scipy.log10(FFT),'x')
-		plt.show()
-		pass
+		t = scipy.linspace(0,120,4000)
+		acc = lambda t: 10*scipy.sin(2*pi*2.0*t) + 5*scipy.sin(2*pi*8.0*t) + 2*scipy.random.random(len(t))
 
+		signal = acc(t)
+
+		FFT = abs(scipy.fft(signal))
+		freqs = scipy.fftpack.fftfreq(signal.size, t[1]-t[0])
+
+		plt.subplot(211)
+		plt.plot(t, signal)
+		plt.subplot(212)
+		plt.plot(freqs,20*scipy.log10(FFT),'x')
+		plt.show()		
+		pass
 
 ###
 def main(argv):

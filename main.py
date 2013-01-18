@@ -11,6 +11,10 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from numpy import random, mean, var, std
 
+import scipy.fftpack
+import pylab
+from scipy import pi
+
 class Analysis:
 	"""docstring for Analysis"""
 
@@ -60,30 +64,29 @@ class Analysis:
 		#	Среднее взвешенное значение (медиана)
 		medianOshPlus = sp.median(self.arrayOshPlus)
 		medianOshMinus = sp.median(self.arrayOshMinus)
-		print ("medianOshMinus =",medianOshPlus)
-		print ("medianOshMinus =",medianOshMinus)
-		# среднее значение
+		print ("medianOshMinus =", medianOshPlus)
+		print ("medianOshMinus =", medianOshMinus)
+		#	среднее значение
 		meanOshPlus = mean(self.arrayOshPlus)
 		meanOshMinus = mean(self.arrayOshMinus)
-		print ("meanOshPlus =",meanOshPlus)
-		print ("meanOshMinus =",meanOshMinus)
-		# дисперсияMinus
+		print ("meanOshPlus =", meanOshPlus)
+		print ("meanOshMinus =", meanOshMinus)
+		#	дисперсия
 		varOshPlus = var(self.arrayOshPlus)
 		varOshMinus = var(self.arrayOshMinus)
-		print ("varOshPlus =",varOshPlus)
-		print ("varOshMinus =",varOshMinus)
-		# СКО
+		print ("varOshPlus =", varOshPlus)
+		print ("varOshMinus =", varOshMinus)
+		#	СКО
 		stdOshPlus = std(self.arrayOshPlus)
 		stdOshMinus = std(self.arrayOshMinus)
-		print ("stdOshPlus =",stdOshPlus)
-		print ("stdOshMinus =",stdOshMinus)
-		#	Стандартное отклонение
-		#	Погрешности выборки		
+		print ("stdOshPlus =", stdOshPlus)
+		print ("stdOshMinus =", stdOshMinus)		
 		pass
 
 	def display(self):
 		self.chartError()
 		#self.chartBacklash()
+		#self.chartFFT()
 		pass
 
 	def chartError(self):
@@ -102,6 +105,14 @@ class Analysis:
 		plt.title('osc', size=12)
 		plt.legend(['osc'], loc='upper right')
 		plt.show()
+
+	def chartFFT(self):
+		#self.arrayOshPlus
+		FFT = abs(scipy.fft(self.arrayOshPlus))
+		freqs = scipy.fftpack.fftfreq(self.arrayOshPlus, 25)
+		plt.plot(freqs,20*scipy.log10(FFT),'x')
+		plt.show()
+		pass
 
 
 ###
